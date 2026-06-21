@@ -1,11 +1,11 @@
-import logo from '../assets/Logo-img.svg';
+import logo from '../assets/Fotor-Logo-img.svg';
 
 export default function Footer({ showPage }) {
   return (
     <footer>
       <div className="footer-grid">
         <div className="footer-brand">
-          <img src={"src/assets/Fotor-Logo-img.svg"} alt="Startupsthan" />
+          <img src={logo} alt="Startupsthan" />
           <p>India's entrepreneurship ecosystem for students, early-stage founders, and the institutions that support them.</p>
         </div>
         <div className="footer-col">

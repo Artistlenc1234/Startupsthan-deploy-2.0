@@ -8,6 +8,27 @@ export default function ContactPage() {
   const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // The email address you want to receive messages at
+    const targetEmail = "contact@startupsthan.in";
+    const subject = encodeURIComponent("New Inquiry from " + form.name);
+    
+    // Format the email body
+    const bodyText = `Name: ${form.name}
+Email: ${form.email}
+Phone: ${form.phone}
+Type: ${form.type}
+
+Message:
+${form.message}
+`;
+
+    const body = encodeURIComponent(bodyText);
+    
+    // Open the user's default email client
+    window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
+    
+    // Show the success message in the UI
     setSubmitted(true);
   };
 

@@ -1,42 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import ScrollReveal from '../components/ScrollReveal';
 
-function useCountUp(target, active) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!active) return;
-    let start = 0;
-    const numericTarget = parseInt(target.replace(/\D/g, ''));
-    const suffix = target.replace(/[0-9]/g, '');
-    const duration = 1800;
-    const step = numericTarget / (duration / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= numericTarget) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start) + suffix);
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [active, target]);
-  return count || '0';
-}
-
 function StatCard({ num, label }) {
-  const ref = useRef(null);
-  const [active, setActive] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    const observer = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setActive(true); observer.unobserve(el); } }, { threshold: 0.5 });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  const display = useCountUp(num, active);
   return (
-    <div className="hero-stat" ref={ref}>
-      <div className="num">{display || num}</div>
+    <div className="hero-stat">
+      <div className="num">{num}</div>
       <div className="label">{label}</div>
     </div>
   );
@@ -53,7 +21,7 @@ export default function HomePage({ showPage, reveal }) {
               <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2" /><path d="M9 13a14 14 0 0 1 8-9c2.5 0 4 1.5 4 4a14 14 0 0 1-9 8" /><path d="m9 13 2 2" /><circle cx="14.5" cy="9.5" r="1.4" /></svg>
               Learn. Build. Launch. Scale.
             </div> */}
-            <h1>Making <span>Bharat </span> the <span>startupsthan</span> of the world.</h1>
+            <h1>Making <span>Bharat </span> the <span>startupsthan</span> of the world</h1>
             <p className="hero-sub">Startupsthan is an entrepreneurship ecosystem that empowers students, aspiring entrepreneurs, and early-stage founders with mentorship, practical learning, and funding readiness.</p>
             <div className="hero-ctas">
               {reveal.login && <a href="startupsthan_app.html" className="btn-primary lock-login">Launch the Platform →</a>}
@@ -63,10 +31,10 @@ export default function HomePage({ showPage, reveal }) {
           </div>
           <div className="hero-visual">
             <div className="hero-stat-row">
-              <StatCard num="01" label="Learn Entrepreneurship Skills" />
-              <StatCard num="02" label="Build Your Business Idea" />
-              <StatCard num="03" label="Lounch Your Startup Journey" />
-              <StatCard num="04" label="Scale With Expert Guidance" />
+              <StatCard num="Learn" label="Entrepreneurship Skills" />
+              <StatCard num="Build" label="Your Business Idea" />
+              <StatCard num="Launch" label="Your Startup Journey" />
+              <StatCard num="Scale" label="With Expert Guidance" />
             </div>
             <div className="hero-tagline">
               <div className="hero-tagline-icon">
