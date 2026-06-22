@@ -24,7 +24,7 @@ const REVEAL = {
   platform: false,
   students: false,
   colleges: false,
-  mentors: false,
+  mentors: true,
   login: false,
 };
 
@@ -64,19 +64,19 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home':       return <HomePage showPage={showPage} reveal={REVEAL} />;
-      case 'about':      return <AboutPage />;
-      case 'bootcamp':   return <BootcampPage showPage={showPage} />;
-      case 'students':   return <StudentsPage />;
-      case 'colleges':   return <CollegesPage showPage={showPage} />;
-      case 'mentors':    return <MentorsPage showPage={showPage} />;
+      case 'home': return <HomePage showPage={showPage} reveal={REVEAL} />;
+      case 'about': return <AboutPage />;
+      case 'bootcamp': return <BootcampPage showPage={showPage} />;
+      case 'students': return <StudentsPage />;
+      case 'colleges': return <CollegesPage showPage={showPage} />;
+      case 'mentors': return <MentorsPage showPage={showPage} />;
       case 'incubation': return <IncubationPage showPage={showPage} />;
-      case 'resources':  return <ResourcesPage showPage={showPage} />;
-      case 'events':     return <EventsPage showPage={showPage} />;
-      case 'stories':    return <StoriesPage />;
-      case 'contact':    return <ContactPage />;
-      case 'platform':   return <PlatformPage />;
-      default:           return <HomePage showPage={showPage} reveal={REVEAL} />;
+      case 'resources': return <ResourcesPage showPage={showPage} />;
+      case 'events': return <EventsPage showPage={showPage} />;
+      case 'stories': return <StoriesPage />;
+      case 'contact': return <ContactPage />;
+      case 'platform': return <PlatformPage />;
+      default: return <HomePage showPage={showPage} reveal={REVEAL} />;
     }
   };
 
