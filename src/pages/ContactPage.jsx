@@ -4,32 +4,83 @@ import ScrollReveal from '../components/ScrollReveal';
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', type: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
 
-  const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+    if (fieldErrors[e.target.name]) {
+      setFieldErrors(prev => ({ ...prev, [e.target.name]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.name.trim() || form.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters long.';
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!form.email || !emailRegex.test(form.email)) {
+      newErrors.email = 'Please enter a valid email address.';
+    }
+    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    if (!form.phone || !phoneRegex.test(form.phone)) {
+      newErrors.phone = 'Please enter a valid phone number.';
+    }
+    if (!form.type) {
+      newErrors.type = 'Please select how you are reaching out.';
+    }
+    if (!form.message.trim() || form.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters long.';
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // The email address you want to receive messages at
-    const targetEmail = "contact@startupsthan.in";
-    const subject = encodeURIComponent("New Inquiry from " + form.name);
-    
-    // Format the email body
-    const bodyText = `Name: ${form.name}
-Email: ${form.email}
-Phone: ${form.phone}
-Type: ${form.type}
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      return;
+    }
 
-Message:
-${form.message}
-`;
+    setLoading(true);
+    setError('');
 
-    const body = encodeURIComponent(bodyText);
-    
-    // Open the user's default email client
-    window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
-    
-    // Show the success message in the UI
-    setSubmitted(true);
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          // This relies on an environment variable setup in Vite (.env or .env.local)
+          access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          type: form.type || 'Not specified',
+          message: form.message,
+          subject: `New Inquiry from ${form.name} via Website`,
+          from_name: 'Startupsthan Website',
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        setError(result.message || 'Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Network error. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -99,18 +150,21 @@ ${form.message}
                 <div className="form-group">
                   <label>Your Name *</label>
                   <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="Arjun Sharma" required />
+                  {fieldErrors.name && <span style={{ color: '#ff4d4f', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>{fieldErrors.name}</span>}
                 </div>
                 <div className="form-group">
                   <label>Email Address *</label>
                   <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="arjun@example.com" required />
+                  {fieldErrors.email && <span style={{ color: '#ff4d4f', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>{fieldErrors.email}</span>}
                 </div>
                 <div className="form-group">
                   <label>Phone / WhatsApp *</label>
-                  <input type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="+91 98765 43210" required />
+                  <input type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="+91 xxxxx xxxxx" required />
+                  {fieldErrors.phone && <span style={{ color: '#ff4d4f', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>{fieldErrors.phone}</span>}
                 </div>
                 <div className="form-group">
-                  <label>I'm reaching out as a…</label>
-                  <select name="type" value={form.type} onChange={handleChange}>
+                  <label>I'm reaching out as a… *</label>
+                  <select name="type" value={form.type} onChange={handleChange} required>
                     <option value="">Select one</option>
                     <option>Student / Aspiring Entrepreneur</option>
                     <option>College / Institution</option>
@@ -118,12 +172,17 @@ ${form.message}
                     <option>Investor / Sponsor</option>
                     <option>Other</option>
                   </select>
+                  {fieldErrors.type && <span style={{ color: '#ff4d4f', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>{fieldErrors.type}</span>}
                 </div>
                 <div className="form-group">
                   <label>Message *</label>
                   <textarea name="message" value={form.message} onChange={handleChange} placeholder="Tell us about your idea, question, or how you'd like to collaborate..." required />
+                  {fieldErrors.message && <span style={{ color: '#ff4d4f', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>{fieldErrors.message}</span>}
                 </div>
-                <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px', fontSize: '0.95rem' }}>Send Message →</button>
+                {error && <div style={{ color: '#ff4d4f', marginBottom: '15px', textAlign: 'center' }}>{error}</div>}
+                <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px', fontSize: '0.95rem' }} disabled={loading}>
+                  {loading ? 'Sending...' : 'Send Message →'}
+                </button>
               </form>
             )}
           </div>
