@@ -17,7 +17,7 @@ export default function BootcampPage({ showPage }) {
 
   return (
     <div className="page active" id="page-bootcamp">
-      <div className="page-hero" style={{ background: "linear-gradient(135deg, rgba(13,13,13,0.86) 0%, rgba(77,26,87,0.76) 60%, rgba(13,13,13,0.86) 100%), url('https://picsum.photos/seed/stsn-bootcamp/1600/700') center/cover no-repeat", backgroundColor: '#0d0d0d' }}>
+      <div className="page-hero" style={{ background: "linear-gradient(135deg, rgba(13,13,13,0.86) 0%, rgba(77,26,87,0.76) 60%, rgba(13,13,13,0.86) 100%), url('/src/assets/bootcamp-bg.JPG') center 40%/cover no-repeat", backgroundColor: '#0d0d0d' }}>
         <h1>Become <span>Startup Ready</span></h1>
         <p>A practical entrepreneurship program designed to take you from business idea to startup pitch.</p>
       </div>
